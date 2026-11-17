@@ -6,7 +6,7 @@ on:
     branches: [main]
   workflow_dispatch: # Run it manually from the UI.
 env:
-  DOCKER_USERNAME: "samson84cc"
+  DOCKER_USERNAME: "khunter1389"
   DOCKER_REPO: "animal-shelter"
 jobs:
   build-job:
@@ -14,8 +14,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Build_docker
-        run: docker build -t khunter1389/animal-shelter:${{ github.sha }} .
+        run: docker build -t "$DOCKER_USERNAME/$DOCKER_REPO:$GITHUB_SHA" .
       - name: lint
-        run: docker run khunter1389/animal-shelter:${{ github.sha }} python -m pylint .
+        run: docker run "$DOCKER_USERNAME/$DOCKER_REPO:$GITHUB_SHA" python -m pylint .
       - name: test
-        run: docker run khunter1389/animal-shelter:${{ github.sha }} python -m pytest tests
+        run: docker run "$DOCKER_USERNAME/$DOCKER_REPO:$GITHUB_SHA" python -m pytest tests
+      - name: Log in to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push image
+        if: github.event_name != 'pull_request'
+        run: docker push "$DOCKER_USERNAME/$DOCKER_REPO:$GITHUB_SHA"
