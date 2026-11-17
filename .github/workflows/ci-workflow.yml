@@ -17,5 +17,7 @@ jobs:
         run: docker build -t khunter1389/animal-shelter:${{ github.sha }} .
       - name: lint
         run: docker run khunter1389/animal-shelter:${{ github.sha }} python -m pylint .
+      - name: test
+        run: docker run khunter1389/animal-shelter:${{ github.sha }} python -m pytest tests
       - name: Hello
         run: "echo 👋 Hello ${{ github.actor }} from the GitHub Actions."
