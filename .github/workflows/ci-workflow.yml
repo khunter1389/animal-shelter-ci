@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Build_docker
-        run: docker build -d -t khunter1389/animal-shelter:${{ github.sha }}
+        run: docker build -t khunter1389/animal-shelter:${{ github.sha }} .
       - name: lint
         run: docker run khunter1389/animal-shelter:${{ github.sha }} python -m pylint .
       - name: Hello
